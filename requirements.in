@@ -1,0 +1,4 @@
+flask
+flask-restful
+Flask-OAuthlib
+requests

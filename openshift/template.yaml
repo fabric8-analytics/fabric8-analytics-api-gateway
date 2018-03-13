@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: api-gateway
+metadata:
+  name: api-gateway
+  annotations:
+    description: api-gateway
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      service: api-gateway
+    name: api-gateway
+  spec:
+    selector:
+      service: api-gateway
+    template:
+      metadata:
+        labels:
+          service: api-gateway
+      spec:
+        containers:
+        - env:
+          - name: F8A_DEBUG
+            value: "true"
+          - name: DEPLOYMENT_PREFIX
+            valueFrom:
+              configMapKeyRef:
+                name: bayesian-config
+                key: deployment-prefix
+          - name: PGBOUNCER_SERVICE_HOST
+            value: bayesian-pgbouncer
+          - name: ANITYA_SERVICE_HOST
+            value: bayesian-anitya
+          - name: BAYESIAN_FETCH_PUBLIC_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: bayesian-config
+                key: keycloak-url
+          - name: BAYESIAN_JWT_AUDIENCE
+            value: "fabric8-online-platform,openshiftio-public"
+          image: "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}"
+          name: api-gateway
+          ports:
+          - containerPort: 5000
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 5000
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 10
+          resources:
+            limits:
+              memory: "512Mi"
+        restartPolicy: Always
+    test: false
+    triggers:
+    - type: ConfigChange
+    replicas: ${REPLICAS}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      service: api-gateway
+    name: api-gateway
+  spec:
+    ports:
+    - name: "32000"
+      port: 32000
+      protocol: TCP
+      targetPort: 5000
+    selector:
+      service: api-gateway
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: api-gateway
+  spec:
+    host:
+    to:
+      kind: Service
+      name: bayesian-api
+parameters:
+- description: Docker registry where the image is
+  displayName: Docker registry
+  required: true
+  name: DOCKER_REGISTRY
+  value: "registry.devshift.net"
+
+- description: Docker image to use
+  displayName: Docker image
+  required: true
+  name: DOCKER_IMAGE
+  value: "bayesian api-gateway"
+
+- description: Image tag
+  displayName: Image tag
+  required: true
+  name: IMAGE_TAG
+  value: "latest"  # image-tag
+
+- description: Number of deployment replicas
+  displayName: Number of deployment replicas
+  required: true
+  name: REPLICAS
+  value: "1"
