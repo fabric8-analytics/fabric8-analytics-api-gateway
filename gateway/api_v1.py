@@ -4,10 +4,8 @@ import json
 import logging
 
 import requests
-from flask import Flask, request, session, Blueprint
+from flask import Flask, request, session
 from flask.json import jsonify
-from flask_cors import CORS
-from flask_restful import Api
 
 from gateway.auth import login_required
 from gateway.defaults import configuration
