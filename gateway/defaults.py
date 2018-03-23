@@ -44,5 +44,7 @@ class F8AConfiguration():
 
     BAYESIAN_JWT_AUDIENCE = os.getenv("BAYESIAN_JWT_AUDIENCE", "fabric8-online-platform")
 
+    BAYESIAN_FETCH_PUBLIC_KEY = os.getenv("BAYESIAN_FETCH_PUBLIC_KEY", "keycloak-url")
+
 
 configuration = F8AConfiguration()
