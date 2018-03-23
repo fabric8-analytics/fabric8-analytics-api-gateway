@@ -1,4 +1,10 @@
 flask
 flask-restful
 Flask-OAuthlib
+flask-cors
+flask-appconfig
+flask-security
+gunicorn
 requests
+pycrypto
+pyjwt

@@ -1,5 +1,7 @@
-directories="f8a_jobs tests"
-separate_files="f8a-jobs.py setup.py"
+#!/usr/bin/env bash
+
+directories="gateway"
+separate_files=""
 pass=0
 fail=0
 
