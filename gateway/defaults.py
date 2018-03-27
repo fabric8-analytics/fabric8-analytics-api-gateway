@@ -32,7 +32,7 @@ class JSONEncoderWithExtraTypes(JSONEncoder):
         return JSONEncoder.default(self, obj)
 
 
-class F8AConfiguration():
+class F8AConfiguration:
     # keep disabled authentication by default
     DISABLE_AUTHENTICATION = os.getenv('DISABLE_AUTHENTICATION', '1') in ('1', 'True', 'true')
 

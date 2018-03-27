@@ -1,14 +1,15 @@
 """Authentication module."""
 
-from flask import current_app, request, g
-from flask_security import RoleMixin, UserMixin, current_user, login_user
-import jwt
-from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 from os import getenv
+
+import jwt
+from flask import current_app, request, g
+from flask_security import UserMixin
+from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 from requests import get, exceptions
 
+from .defaults import configuration
 from .exceptions import HTTPError
-from gateway.defaults import configuration
 
 jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
 
@@ -41,19 +42,20 @@ def fetch_public_key(app):
 
 
 def decode_token():
-    """Decode JWT token."""
+    """Decode the authorization token read from the request header."""
     token = request.headers.get('Authorization')
     if token is None:
-        return token
+        return {}
 
     if token.startswith('Bearer '):
         _, token = token.split(' ', 1)
 
     pub_key = fetch_public_key(current_app)
     audiences = configuration.BAYESIAN_JWT_AUDIENCE.split(',')
+
     for aud in audiences:
         try:
-            decoded_token = jwt.decode(token, pub_key, audience=aud)
+            decoded_token = jwt.decode(token, pub_key, algorithms='RS256', audience=aud)
         except jwt.InvalidTokenError:
             current_app.logger.error('Auth Token could not be decoded for audience {}'.format(aud))
             decoded_token = None
