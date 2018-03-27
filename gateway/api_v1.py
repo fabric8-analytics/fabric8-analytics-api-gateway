@@ -53,21 +53,22 @@ def api_gateway(**kwargs):
     :param service_end_point: service endpoint that should be called
     :param data_for_service: data for the service in json
     """
-    service_endpoint = kwargs.get("service_endpoint", None)
-    uri = configuration.DATA_IMPORTER_ENDPOINT + "/" + service_endpoint + "/"
+
+    service_endpoint = kwargs.get('service_endpoint', None)
+    uri = configuration.bayesian_services[kwargs.get('service_name', 'data_importer')] + '/' + service_endpoint + '/'
 
     if request.method == 'POST':
         try:
-            result = requests.post(uri, json=json.dumps(kwargs.get("data_for_service", None)))
-            status_code = 200
+            result = requests.post(uri, json=json.dumps(kwargs.get('data_for_service', None)))
+            status_code = result.status_code
         except requests.exceptions.ConnectionError:
             result = {'Error': 'Error occured during the request'}
             status_code = 500
 
     elif request.method == 'GET':
         try:
-            result = requests.get(uri, params=kwargs.get("data_for_service", None))
-            status_code = 200
+            result = requests.get(uri, params=kwargs.get('data', None))
+            status_code = result.status_code
         except requests.exceptions.ConnectionError:
             result = {'Error': 'Error occured during the request'}
             status_code = 500
