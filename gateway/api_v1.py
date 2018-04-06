@@ -53,7 +53,6 @@ def api_gateway(**kwargs):
     :param service_end_point: service endpoint that should be called
     :param data_for_service: data for the service in json
     """
-
     service_endpoint = kwargs.get('service_endpoint', None)
     # TODO: use urljoin of string.format there
     uri = configuration.bayesian_services[kwargs.get('service_name', 'data_importer')] + '/' + \
