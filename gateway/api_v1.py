@@ -67,7 +67,7 @@ def api_gateway(**kwargs):
 
     elif request.method == 'GET':
         try:
-            result = requests.get(uri, params=kwargs.get('data', None))
+            result = requests.get(uri, params=kwargs.get("data_for_service", None))
             status_code = result.status_code
         except requests.exceptions.ConnectionError:
             result = {'Error': 'Error occured during the request'}

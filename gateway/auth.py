@@ -20,24 +20,23 @@ def fetch_public_key(app):
     #  it's actually safe - the worst thing that can happen is that we will
     #  fetch and save the same value on the app object multiple times
 
-    if not getattr(app, 'public_key', ''):
-        keycloak_url = configuration.BAYESIAN_FETCH_PUBLIC_KEY
-        if keycloak_url:
-            pub_key_url = keycloak_url.strip('/') + '/auth/realms/fabric8/'
-            try:
-                result = get(pub_key_url, timeout=0.5)
-                app.logger.info('Fetching public key from %s, status %d, result: %s',
-                                pub_key_url, result.status_code, result.text)
-            except exceptions.Timeout:
-                app.logger.error('Timeout fetching public key from %s', pub_key_url)
-                return ''
-            if result.status_code != 200:
-                return ''
-            pkey = result.json().get('public_key', '')
-            app.public_key = \
-                '-----BEGIN PUBLIC KEY-----\n{pkey}\n-----END PUBLIC KEY-----'.format(pkey=pkey)
-        else:
-            app.public_key = app.config.get('BAYESIAN_PUBLIC_KEY')
+    keycloak_url = configuration.BAYESIAN_FETCH_PUBLIC_KEY
+    if keycloak_url:
+        pub_key_url = keycloak_url.strip('/') + '/auth/realms/fabric8/'
+        try:
+            result = get(pub_key_url, timeout=0.5)
+            app.logger.info('Fetching public key from %s, status %d, result: %s',
+                            pub_key_url, result.status_code, result.text)
+        except exceptions.Timeout:
+            app.logger.error('Timeout fetching public key from %s', pub_key_url)
+            return ''
+        if result.status_code != 200:
+            return ''
+        pkey = result.json().get('public_key', '')
+        app.public_key = \
+            '-----BEGIN PUBLIC KEY-----\n{pkey}\n-----END PUBLIC KEY-----'.format(pkey=pkey)
+    else:
+        app.public_key = app.config.get('BAYESIAN_PUBLIC_KEY')
 
     return app.public_key
 
@@ -115,7 +114,6 @@ def login_required(view):
     return wrapper
 
 def user_whitelisted(user,users_whitelist='users_whitelist'):
-
 
     with open(users_whitelist, 'r') as f:
         white_list = f.readlines()
