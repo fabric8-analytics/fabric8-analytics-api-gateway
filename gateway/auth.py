@@ -19,6 +19,7 @@ def fetch_public_key(app):
     # TODO: even though saving the key on the app object is not very nice,
     #  it's actually safe - the worst thing that can happen is that we will
     #  fetch and save the same value on the app object multiple times
+
     keycloak_url = configuration.BAYESIAN_FETCH_PUBLIC_KEY
     if keycloak_url:
         pub_key_url = keycloak_url.strip('/') + '/auth/realms/fabric8/'
@@ -101,7 +102,11 @@ def login_required(view):
             user = F8aUser(decoded.get('email', 'nobody@nowhere.nodomain'))
 
         if user:
-            g.current_user = user
+            if user_whitelisted(user):
+                g.current_user = user
+            else:
+                g.current_user = F8aUser('unauthenticated@no.auth.token')
+                raise HTTPError(401, 'User needs to be whitelisted')
         else:
             g.current_user = F8aUser('unauthenticated@no.auth.token')
             raise HTTPError(401, 'Authentication required')
@@ -109,6 +114,12 @@ def login_required(view):
 
     return wrapper
 
+def user_whitelisted(user,users_whitelist='users_whitelist'):
+
+    with open(users_whitelist, 'r') as f:
+        white_list = f.readlines()
+
+    return user.email in white_list
 
 class F8aUser(UserMixin):
     """F8a user class."""

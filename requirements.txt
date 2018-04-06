@@ -30,6 +30,7 @@ passlib==1.7.1            # via flask-security
 pycrypto==2.6.1
 pyjwt==1.6.1
 pytz==2018.3              # via babel, flask-restful
+pyyaml==3.12
 requests-oauthlib==0.8.0  # via flask-oauthlib
 requests==2.18.4
 six==1.11.0               # via flask-appconfig, flask-cors, flask-restful
