@@ -55,7 +55,8 @@ def decode_token():
 
     for aud in audiences:
         try:
-            decoded_token = jwt.decode(token.encode('ascii'), pub_key, algorithm='RS256', audience=aud)
+            decoded_token = jwt.decode(token.encode('ascii'), pub_key, algorithm='RS256',
+                                       audience=aud)
         except jwt.InvalidTokenError:
             current_app.logger.error('Auth Token could not be decoded for audience {}'.format(aud))
             decoded_token = None
