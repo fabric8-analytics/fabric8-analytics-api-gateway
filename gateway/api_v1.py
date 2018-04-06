@@ -74,7 +74,7 @@ def api_gateway(**kwargs):
             result = {'Error': 'Error occured during the request'}
             status_code = 500
 
-    return jsonify(result), status_code
+    return jsonify(result.text), status_code
 
 
 @app.route('/readiness')

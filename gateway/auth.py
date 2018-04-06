@@ -118,7 +118,7 @@ def login_required(view):
 def user_whitelisted(user, users_whitelist='users_whitelist'):
 
     with open(users_whitelist, 'r') as f:
-        white_list = f.readlines()
+        white_list = f.read().splitlines()
 
     return user.email in white_list
 
