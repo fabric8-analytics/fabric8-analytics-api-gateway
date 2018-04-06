@@ -65,8 +65,7 @@ class F8AConfiguration:
     GREMLIN_ENDPOINT = "http://%s:%s" % (BAYESIAN_GREMLIN_HTTP_SERVICE_HOST,
                                          BAYESIAN_GREMLIN_HTTP_SERVICE_PORT)
 
-    bayesian_services = dict(data_importer=DATA_IMPORTER_ENDPOINT, jobs=JOBS_ENDPOINT,
-                             gremlin=GREMLIN_ENDPOINT)
+    bayesian_services = {'data_importer': DATA_IMPORTER_ENDPOINT, 'jobs': JOBS_ENDPOINT, 'gremlin': GREMLIN_ENDPOINT}
 
 
 configuration = F8AConfiguration()
