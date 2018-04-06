@@ -35,7 +35,7 @@ def fetch_public_key(app):
         app.public_key = \
             '-----BEGIN PUBLIC KEY-----\n{pkey}\n-----END PUBLIC KEY-----'.format(pkey=pkey)
     else:
-     app.public_key = app.config.get('BAYESIAN_PUBLIC_KEY')
+        app.public_key = app.config.get('BAYESIAN_PUBLIC_KEY')
 
     return app.public_key
 
@@ -54,7 +54,8 @@ def decode_token():
 
     for aud in audiences:
         try:
-            decoded_token = jwt.decode(token.encode('ascii'), pub_key, algorithm='RS256', audience=aud)
+            decoded_token = jwt.decode(token.encode('ascii'), pub_key, algorithm='RS256',
+                                       audience=aud)
         except jwt.InvalidTokenError:
             current_app.logger.error('Auth Token could not be decoded for audience {}'.format(aud))
             decoded_token = None
