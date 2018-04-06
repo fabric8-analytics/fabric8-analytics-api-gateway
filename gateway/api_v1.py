@@ -55,7 +55,7 @@ def api_gateway(**kwargs):
     """
 
     service_endpoint = kwargs.get('service_endpoint', None)
-    uri = configuration.bayesian_services[kwargs.get('service_name', 'data_importer')] + '/' + service_endpoint + '/'
+    uri = configuration.bayesian_services[kwargs.get('service_name', 'data_importer')] + '/api/v1' +'/' + service_endpoint + '/'
 
     if request.method == 'POST':
         try:

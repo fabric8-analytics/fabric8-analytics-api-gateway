@@ -118,7 +118,7 @@ def user_whitelisted(user,users_whitelist='users_whitelist'):
     with open(users_whitelist, 'r') as f:
         white_list = f.readlines()
 
-    if user in white_list:
+    if user.email in white_list:
         return True
     else:
         return False
