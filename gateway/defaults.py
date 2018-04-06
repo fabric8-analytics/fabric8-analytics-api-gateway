@@ -38,9 +38,11 @@ class F8AConfiguration:
 
     BAYESIAN_DATA_IMPORTER_SERVICE_PORT = os.getenv("BAYESIAN_DATA_IMPORTER_SERVICE_PORT", 9192)
 
-    BAYESIAN_DATA_IMPORTER_SERVICE_HOST = os.getenv("BAYESIAN_DATA_IMPORTER_SERVICE_HOST", "data-model-importer")
+    BAYESIAN_DATA_IMPORTER_SERVICE_HOST = os.getenv("BAYESIAN_DATA_IMPORTER_SERVICE_HOST",
+                                                    "data-model-importer")
 
-    DATA_IMPORTER_ENDPOINT = "http://%s:%s" % (BAYESIAN_DATA_IMPORTER_SERVICE_HOST, BAYESIAN_DATA_IMPORTER_SERVICE_PORT)
+    DATA_IMPORTER_ENDPOINT = "http://%s:%s" % (BAYESIAN_DATA_IMPORTER_SERVICE_HOST,
+                                               BAYESIAN_DATA_IMPORTER_SERVICE_PORT)
 
     BAYESIAN_JWT_AUDIENCE = os.getenv("BAYESIAN_JWT_AUDIENCE", "fabric8-online-platform")
 
@@ -52,13 +54,17 @@ class F8AConfiguration:
 
     JOBS_ENDPOINT = "http://%s:%s" % (BAYESIAN_JOBS_SERVICE_HOST, BAYESIAN_JOBS_SERVICE_PORT)
 
-    BAYESIAN_GREMLIN_HTTP_SERVICE_HOST =  os.getenv("BAYESIAN_GREMLIN_HTTP_SERVICE_HOST", "data-model-importer")
+    BAYESIAN_GREMLIN_HTTP_SERVICE_HOST = os.getenv("BAYESIAN_GREMLIN_HTTP_SERVICE_HOST",
+                                                   "data-model-importer")
 
-    BAYESIAN_GREMLIN_HTTP_SERVICE_PORT = os.getenv("BAYESIAN_GREMLIN_HTTP_SERVICE_PORT", "data-model-importer")
+    BAYESIAN_GREMLIN_HTTP_SERVICE_PORT = os.getenv("BAYESIAN_GREMLIN_HTTP_SERVICE_PORT",
+                                                   "data-model-importer")
 
-    GREMLIN_ENDPOINT = "http://%s:%s" % (BAYESIAN_GREMLIN_HTTP_SERVICE_HOST, BAYESIAN_GREMLIN_HTTP_SERVICE_PORT)
+    GREMLIN_ENDPOINT = "http://%s:%s" % (BAYESIAN_GREMLIN_HTTP_SERVICE_HOST,
+                                         BAYESIAN_GREMLIN_HTTP_SERVICE_PORT)
 
-    bayesian_services = dict(data_importer=DATA_IMPORTER_ENDPOINT, jobs=JOBS_ENDPOINT, gremlin=GREMLIN_ENDPOINT)
+    bayesian_services = dict(data_importer=DATA_IMPORTER_ENDPOINT, jobs=JOBS_ENDPOINT,
+                             gremlin=GREMLIN_ENDPOINT)
 
 
 configuration = F8AConfiguration()
