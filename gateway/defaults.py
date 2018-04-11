@@ -15,7 +15,7 @@ def json_serial(obj):
 
 class JSONEncoderWithExtraTypes(JSONEncoder):
     """Implementation of JSON Encoder.
-    
+
     It supports additional types:
 
         - date/time objects
