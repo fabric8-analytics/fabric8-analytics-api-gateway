@@ -53,10 +53,8 @@ if [ "$REBUILD" == "1" ] || \
   make fast-docker-build-tests
 fi
 
-# export PYTHONPATH=`pwd`/gateway/
+export PYTHONPATH=`pwd`/gateway/
 
 echo "Starting test suite"
-# cd tests
-# PYTHONDONTWRITEBYTECODE=1 python3 `which pytest` --cov=../gateway/ --cov-report term-missing -vv .
 PYTHONDONTWRITEBYTECODE=1 python3 `which pytest` --cov=gateway/ --cov-report term-missing -vv tests
 echo "Test suite passed \\o/"
