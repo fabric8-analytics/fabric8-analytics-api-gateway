@@ -1,7 +1,7 @@
 """Unit tests for the authorization module."""
 
 import unittest
-from gateway import auth
+from gateway.auth import *
 
 
 if __name__ == '__main__':
