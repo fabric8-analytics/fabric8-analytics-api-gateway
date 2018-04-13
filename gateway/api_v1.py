@@ -9,7 +9,7 @@ from flask.json import jsonify
 
 from gateway.auth import login_required
 from gateway.defaults import configuration
-from gateway.exceptions import HTTPError
+from gateway.errors import HTTPError
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +54,6 @@ def api_gateway(varargs=None):
     data that service ingest separated by /
     """
     vargs_array = varargs.split("/")
-
-    print(varargs)
 
     service_name = vargs_array[0] or 'data_importer'
 
