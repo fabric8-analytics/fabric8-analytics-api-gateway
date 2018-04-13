@@ -41,4 +41,6 @@ if [ "$REBUILD" == "1" ] || \
 fi
 
 echo "Starting test suite"
+cd tests
+PYTHONDONTWRITEBYTECODE=1 python3 `which pytest` --cov=../gateway/ --cov-report term-missing -vv .
 echo "Test suite passed \\o/"
