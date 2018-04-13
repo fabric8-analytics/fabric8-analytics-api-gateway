@@ -1,5 +1,5 @@
 REGISTRY?=registry.devshift.net
-REPOSITORY?=fabric8-analytics/api_gateway
+REPOSITORY?=fabric8-analytics/f8a-api-gateway
 DEFAULT_TAG=latest
 
 .PHONY: all docker-build fast-docker-build test get-image-name get-image-repository
