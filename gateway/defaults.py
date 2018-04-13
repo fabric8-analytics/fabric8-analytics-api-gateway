@@ -23,6 +23,7 @@ class JSONEncoderWithExtraTypes(JSONEncoder):
     """
 
     def default(self, obj):
+        """Encode method."""
         try:
             if isinstance(obj, datetime.datetime):
                 return json_serial(obj)
@@ -35,6 +36,8 @@ class JSONEncoderWithExtraTypes(JSONEncoder):
 
 
 class F8AConfiguration:
+    """Configuration class."""
+
     # keep disabled authentication by default
     DISABLE_AUTHENTICATION = os.getenv('DISABLE_AUTHENTICATION', '1') in ('1', 'True', 'true')
 
@@ -65,7 +68,9 @@ class F8AConfiguration:
     GREMLIN_ENDPOINT = "http://%s:%s" % (BAYESIAN_GREMLIN_HTTP_SERVICE_HOST,
                                          BAYESIAN_GREMLIN_HTTP_SERVICE_PORT)
 
-    bayesian_services = {'data_importer': DATA_IMPORTER_ENDPOINT, 'jobs': JOBS_ENDPOINT, 'gremlin': GREMLIN_ENDPOINT}
+    bayesian_services = {'data_importer': DATA_IMPORTER_ENDPOINT,
+                         'jobs': JOBS_ENDPOINT,
+                         'gremlin': GREMLIN_ENDPOINT}
 
 
 configuration = F8AConfiguration()

@@ -45,28 +45,24 @@ def error():
 
 
 @app.route('/<path:varargs>', methods=['POST', 'GET'])
-#@login_required
+@login_required
 def api_gateway(varargs=None):
     """Call f8a service based on request parameters.
+
     Parameters are separated by / where the firs is servicename
     second is the service endpoint name following by
     data that service ingest separated by /
     """
-
-
     vargs_array = varargs.split("/")
 
     print(varargs)
 
     service_name = vargs_array[0] or 'data_importer'
 
-
-
     # TODO: use urljoin of string.format there
     uri = configuration.bayesian_services[service_name] + '/' + varargs
 
-    headers = {'Content-Type':'application/json'}
-
+    headers = {'Content-Type': 'application/json'}
 
     if request.method == 'POST':
         try:
