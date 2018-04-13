@@ -10,11 +10,11 @@ set -x
 
 here=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
 
-IMAGE_NAME=${IMAGE_NAME:-registry.devshift.net/f8a/api_gateway}
-TEST_IMAGE_NAME="jobs-tests"
+IMAGE_NAME=${IMAGE_NAME:-registry.devshift.net/fabric8-analytics/f8a-api-gateway}
+TEST_IMAGE_NAME=${IMAGE_NAME}
 
 TIMESTAMP="$(date +%F-%H-%M-%S)"
-CONTAINER_NAME="jobs-tests-${TIMESTAMP}"
+CONTAINER_NAME="api_gateway-${TIMESTAMP}"
 
 gc() {
   retval=$?

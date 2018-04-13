@@ -44,23 +44,29 @@ def error():
     raise HTTPError(status, msg)
 
 
-@app.route('/<service>/<service_endpoint>/', methods=['POST', 'GET'])
+@app.route('/<path:varargs>', methods=['POST', 'GET'])
 @login_required
-def api_gateway(**kwargs):
+def api_gateway(varargs=None):
     """Call f8a service based on request parameters.
 
-    :param service_name: service that should be called
-    :param service_end_point: service endpoint that should be called
-    :param data_for_service: data for the service in json
+    Parameters are separated by / where the firs is servicename
+    second is the service endpoint name following by
+    data that service ingest separated by /
     """
-    service_endpoint = kwargs.get('service_endpoint', None)
+    vargs_array = varargs.split("/")
+
+    print(varargs)
+
+    service_name = vargs_array[0] or 'data_importer'
+
     # TODO: use urljoin of string.format there
-    uri = configuration.bayesian_services[kwargs.get('service_name', 'data_importer')] + \
-        '/api/v1/' + service_endpoint + '/'
+    uri = configuration.bayesian_services[service_name] + '/' + varargs
+
+    headers = {'Content-Type': 'application/json'}
 
     if request.method == 'POST':
         try:
-            result = requests.post(uri, json=json.dumps(kwargs.get('data_for_service', None)))
+            result = requests.post(uri, json=json.dumps(None), headers=headers)
             status_code = result.status_code
         except requests.exceptions.ConnectionError:
             result = {'Error': 'Error occured during the request'}
@@ -68,13 +74,14 @@ def api_gateway(**kwargs):
 
     elif request.method == 'GET':
         try:
-            result = requests.get(uri, params=kwargs.get("data_for_service", None))
+            result = requests.get(uri, headers=headers)
             status_code = result.status_code
+            logger.info(logger, 'Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
             result = {'Error': 'Error occured during the request'}
             status_code = 500
 
-    return jsonify(result), status_code
+    return jsonify(result.text), status_code
 
 
 @app.route('/readiness')
