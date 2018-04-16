@@ -6,6 +6,7 @@ import logging
 import requests
 from flask import Flask, request, session
 from flask.json import jsonify
+from urllib.parse import urljoin
 
 from gateway.auth import login_required
 from gateway.defaults import configuration
@@ -59,8 +60,7 @@ def api_gateway(varargs=None):
     # remove service name from the url
     payload = "/".join(vargs_array[1:])
 
-    # TODO: use urljoin of string.format there
-    uri = configuration.bayesian_services[service_name] + '/' + payload
+    uri = urljoin(configuration.bayesian_services[service_name], payload)
     headers = {'Content-Type': 'application/json'}
 
     if request.method == 'POST':
@@ -69,7 +69,7 @@ def api_gateway(varargs=None):
             status_code = result.status_code
             logger.info(logger, 'Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
-            result = {'Error': 'Error occured during the request'}
+            result = {'Error': 'Error occurred during the request'}
             status_code = 500
 
     elif request.method == 'GET':
@@ -78,7 +78,7 @@ def api_gateway(varargs=None):
             status_code = result.status_code
             logger.info(logger, 'Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
-            result = {'Error': 'Error occured during the request'}
+            result = {'Error': 'Error occurred during the request'}
             status_code = 500
 
     return jsonify(result.text), status_code
