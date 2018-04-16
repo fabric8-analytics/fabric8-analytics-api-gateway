@@ -54,18 +54,20 @@ def api_gateway(varargs=None):
     data that service ingest separated by /
     """
     vargs_array = varargs.split("/")
-
+    # get service name
     service_name = vargs_array[0] or 'data_importer'
+    # remove service name from the url
+    payload = "/".join(vargs_array[1:])
 
     # TODO: use urljoin of string.format there
-    uri = configuration.bayesian_services[service_name] + '/' + varargs
-
+    uri = configuration.bayesian_services[service_name] + '/' + payload
     headers = {'Content-Type': 'application/json'}
 
     if request.method == 'POST':
         try:
-            result = requests.post(uri, json=json.dumps(None), headers=headers)
+            result = requests.post(uri, json=json.dumps(payload), headers=headers)
             status_code = result.status_code
+            logger.info(logger, 'Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
             result = {'Error': 'Error occured during the request'}
             status_code = 500
