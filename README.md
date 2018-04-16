@@ -1,5 +1,24 @@
 # fabric8-analytics-api-gateway
 
+is proxy service that forwards requests to fabric8-analytics services.
+
+List of supported [services](https://github.com/fabric8-analytics/fabric8-analytics-api-gateway/blob/8ddf91dddc7641667b40776439149c4c8019515a/gateway/defaults.py#L71)
+
+Whitelisted users that can access these services are [here](https://github.com/fabric8-analytics/fabric8-analytics-api-gateway/blob/master/gateway/users_whitelist)
+
+## Usage
+
+export your Openshiftio token to env variable OSIO_TOKEN.
+
+The only difference between call to actual service and the proxy call,
+
+is that we append service_name before the request path.
+
+In this example its the data_importer.
+
+```
+curl -i -H "Authorization: Bearer $OSIO_TOKEN" -H "Accept: application/json" "http://localhost:5000/data_importer/api/v1/pending"
+```
 
 ### Footnotes
 
