@@ -51,7 +51,7 @@ objects:
               path: /readiness
               port: 5000
               scheme: HTTP
-            initialDelaySeconds: 30
+            initialDelaySeconds: 5
             periodSeconds: 60
             timeoutSeconds: 10
           livenessProbe:
@@ -59,7 +59,7 @@ objects:
               path: /liveness
               port: 5000
               scheme: HTTP
-            initialDelaySeconds: 30
+            initialDelaySeconds: 5
             periodSeconds: 60
             timeoutSeconds: 10
           resources:
