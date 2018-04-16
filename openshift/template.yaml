@@ -1,25 +1,25 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: api-gateway
+  template: f8a-api-gateway
 metadata:
-  name: api-gateway
+  name: f8a-api-gateway
   annotations:
-    description: api-gateway
+    description: f8a-api-gateway
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
-      service: api-gateway
-    name: api-gateway
+      service: f8a-api-gateway
+    name: f8a-api-gateway
   spec:
     selector:
-      service: api-gateway
+      service: f8a-api-gateway
     template:
       metadata:
         labels:
-          service: api-gateway
+          service: f8a-api-gateway
       spec:
         containers:
         - env:
@@ -42,7 +42,7 @@ objects:
           - name: BAYESIAN_JWT_AUDIENCE
             value: "fabric8-online-platform,openshiftio-public"
           image: "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}"
-          name: api-gateway
+          name: f8a-api-gateway
           ports:
           - containerPort: 5000
             protocol: TCP
@@ -74,8 +74,8 @@ objects:
   kind: Service
   metadata:
     labels:
-      service: api-gateway
-    name: api-gateway
+      service: f8a-api-gateway
+    name: f8a-api-gateway
   spec:
     ports:
     - name: "32000"
@@ -83,16 +83,16 @@ objects:
       protocol: TCP
       targetPort: 5000
     selector:
-      service: api-gateway
+      service: f8a-api-gateway
 - apiVersion: v1
   kind: Route
   metadata:
-    name: api-gateway
+    name: f8a-api-gateway
   spec:
     host:
     to:
       kind: Service
-      name: bayesian-api
+      name: f8a-api-gateway
 parameters:
 - description: Docker registry where the image is
   displayName: Docker registry
