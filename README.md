@@ -1,3 +1,5 @@
+[![Build Status](https://ci.centos.org/view/Devtools/job/devtools-fabric8-analytics-api-gateway-f8a-build-master/badge/icon)](https://ci.centos.org/view/Devtools/job/devtools-fabric8-analytics-api-gateway-f8a-build-master/)
+
 # fabric8-analytics-api-gateway
 
 is proxy service that forwards requests to fabric8-analytics services.
