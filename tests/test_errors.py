@@ -1,7 +1,7 @@
 """Unit tests for the error module."""
 
 import unittest
-from error import *
+from errors import *
 
 
 if __name__ == '__main__':
