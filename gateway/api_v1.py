@@ -65,7 +65,7 @@ def api_gateway(varargs=None):
 
     if request.method == 'POST':
         try:
-            result = requests.post(uri, json=json.dumps(payload), headers=headers)
+            result = requests.post(uri, json=json.dumps(request.values), headers=headers)
             status_code = result.status_code
             logger.info(logger, 'Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
