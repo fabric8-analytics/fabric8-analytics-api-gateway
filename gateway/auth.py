@@ -8,8 +8,8 @@ from flask_security import UserMixin
 from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 from requests import get, exceptions
 
-from .defaults import configuration
-from .errors import HTTPError
+from gateway.defaults import configuration
+from gateway.errors import HTTPError
 
 jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
 
