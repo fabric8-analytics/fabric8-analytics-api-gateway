@@ -37,3 +37,4 @@ curl -i -H "Authorization: Bearer $OSIO_TOKEN" -H "Accept: application/json" "ht
 The first script checks the indentation, line lengths, variable names, white space around operators etc. The second
 script checks all documentation strings - its presence and format. Please fix any warnings and errors reported by these
 scripts.
+
