@@ -30,22 +30,29 @@ def logout():
     return {}, 201
 
 
-@app.route('/<path:varargs>', methods=['POST', 'GET'])
+@app.route('/')
+def index():
+    """List all known services."""
+    response = {
+        'services': sorted(list(configuration.bayesian_services.keys()))
+    }
+
+    return jsonify(response), 200
+
+
+@app.route('/<service>/<path:varargs>', methods=['POST', 'GET'])
 @login_required
-def api_gateway(varargs=None):
+def api_gateway(service, varargs=None):
     """Call f8a service based on request parameters.
 
     Parameters are separated by / where the firs is servicename
     second is the service endpoint name following by
     data that service ingest separated by /
     """
-    vargs_array = varargs.split("/")
-    # get service name
-    service_name = vargs_array[0] or 'data_importer'
-    # remove service name from the url
-    payload = "/".join(vargs_array[1:])
+    if service not in configuration.bayesian_services:
+        return jsonify({'error': 'unknown service'}), 400
 
-    uri = urljoin(configuration.bayesian_services[service_name], payload)
+    uri = urljoin(configuration.bayesian_services[service], varargs)
     headers = {'Content-Type': 'application/json'}
 
     if request.method == 'POST':
@@ -54,9 +61,10 @@ def api_gateway(varargs=None):
             status_code = result.status_code
             current_app.logger.info('Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
-            result = {'Error': 'Error occurred during the request'}
+            error = {"Error": "Error occurred during the request adress"
+                              " {u} is not available".format(u=uri)}
             status_code = 500
-            current_app.logger.error(result)
+            current_app.logger.error(error)
 
     elif request.method == 'GET':
         try:
@@ -64,11 +72,18 @@ def api_gateway(varargs=None):
             status_code = result.status_code
             current_app.logger.info('Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
-            result = {'Error': 'Error occurred during the request'}
+            error = {"Error": "Error occurred during the request adress"
+                              " {u} is not available".format(u=uri)}
             status_code = 500
-            current_app.logger.error(result)
+            current_app.logger.error(error)
 
-    return jsonify(result.text), status_code
+    response = app.response_class(
+        response=json.dumps(error or result.text),
+        status=status_code,
+        mimetype='application/json'
+    )
+
+    return response
 
 
 @app.route('/readiness')

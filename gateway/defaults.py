@@ -53,17 +53,17 @@ class F8AConfiguration:
 
     BAYESIAN_FETCH_PUBLIC_KEY = os.getenv("BAYESIAN_FETCH_PUBLIC_KEY", "keycloak-url")
 
-    BAYESIAN_JOBS_SERVICE_PORT = os.getenv("BAYESIAN_JOBS_SERVICE_PORT", "data-model-importer")
+    BAYESIAN_JOBS_SERVICE_PORT = os.getenv("BAYESIAN_JOBS_SERVICE_PORT", 34000)
 
-    BAYESIAN_JOBS_SERVICE_HOST = os.getenv("BAYESIAN_JOBS_SERVICE_HOST", "data-model-importer")
+    BAYESIAN_JOBS_SERVICE_HOST = os.getenv("BAYESIAN_JOBS_SERVICE_HOST", "jobs-service")
 
     JOBS_ENDPOINT = "http://%s:%s" % (BAYESIAN_JOBS_SERVICE_HOST, BAYESIAN_JOBS_SERVICE_PORT)
 
     BAYESIAN_GREMLIN_HTTP_SERVICE_HOST = os.getenv("BAYESIAN_GREMLIN_HTTP_SERVICE_HOST",
-                                                   "data-model-importer")
+                                                   "gremlin-service")
 
     BAYESIAN_GREMLIN_HTTP_SERVICE_PORT = os.getenv("BAYESIAN_GREMLIN_HTTP_SERVICE_PORT",
-                                                   "data-model-importer")
+                                                   8182)
 
     GREMLIN_ENDPOINT = "http://%s:%s" % (BAYESIAN_GREMLIN_HTTP_SERVICE_HOST,
                                          BAYESIAN_GREMLIN_HTTP_SERVICE_PORT)
