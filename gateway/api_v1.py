@@ -2,9 +2,10 @@
 
 import json
 import logging
+import os
 
 import requests
-from flask import Flask, request, session
+from flask import Flask, request, session, current_app
 from flask.json import jsonify
 from urllib.parse import urljoin
 
@@ -12,9 +13,12 @@ from gateway.auth import login_required
 from gateway.defaults import configuration
 from gateway.errors import HTTPError
 
-logger = logging.getLogger(__name__)
-
 app = Flask(__name__)
+
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 
 def logout():
@@ -67,7 +71,7 @@ def api_gateway(varargs=None):
         try:
             result = requests.post(uri, json=json.dumps(request.values), headers=headers)
             status_code = result.status_code
-            logger.info(logger, 'Request has reported following body: {r}'.format(r=result))
+            current_app.logger.info('Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
             result = {'Error': 'Error occurred during the request'}
             status_code = 500
@@ -76,7 +80,7 @@ def api_gateway(varargs=None):
         try:
             result = requests.get(uri, headers=headers)
             status_code = result.status_code
-            logger.info(logger, 'Request has reported following body: {r}'.format(r=result))
+            current_app.logger.info('Request has reported following body: {r}'.format(r=result))
         except requests.exceptions.ConnectionError:
             result = {'Error': 'Error occurred during the request'}
             status_code = 500
@@ -87,12 +91,14 @@ def api_gateway(varargs=None):
 @app.route('/readiness')
 def readiness():
     """Handle the /readiness REST API call."""
+    current_app.logger.debug("Readiness probe - connect")
     return jsonify({}), 200
 
 
 @app.route('/liveness')
 def liveness():
     """Handle the /liveness REST API call."""
+    current_app.logger.debug("Liveness probe - connect")
     return jsonify({}), 200
 
 
