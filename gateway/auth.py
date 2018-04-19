@@ -2,16 +2,14 @@
 
 from os import getenv
 
+import os
 import jwt
 from flask import current_app, request, g
 from flask_security import UserMixin
-from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 from requests import get, exceptions
 
 from gateway.defaults import configuration
 from gateway.errors import HTTPError
-
-jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
 
 
 def fetch_public_key(app):
@@ -53,6 +51,7 @@ def decode_token():
     pub_key = fetch_public_key(current_app)
     audiences = configuration.BAYESIAN_JWT_AUDIENCE.split(',')
 
+    decoded_token = None
     for aud in audiences:
         try:
             decoded_token = jwt.decode(token.encode('ascii'), pub_key, algorithm='RS256',
@@ -81,7 +80,6 @@ def login_required(view):
             return view(*args, **kwargs)
 
         lgr = current_app.logger
-        user = None
 
         try:
             decoded = decode_token()
@@ -89,24 +87,24 @@ def login_required(view):
                 lgr.exception('Provide an Authorization token with the API request')
                 raise HTTPError(401, 'Authentication failed - token missing')
 
-            lgr.info('Successfuly authenticated user {e} using JWT'.format(e=decoded.get('email')))
+            lgr.info('Successfully authenticated user {e} using JWT token'.format(
+                e=decoded.get('email'))
+            )
         except jwt.ExpiredSignatureError as exc:
             lgr.exception('Expired JWT token')
-            decoded = {'email': 'unauthenticated@jwt.failed'}
             raise HTTPError(401, 'Authentication failed - token has expired') from exc
         except Exception as exc:
             lgr.exception('Failed decoding JWT token')
-            decoded = {'email': 'unauthenticated@jwt.failed'}
             raise HTTPError(401, 'Authentication failed - could not decode JWT token') from exc
         else:
             user = F8aUser(decoded.get('email', 'nobody@nowhere.nodomain'))
 
         if user:
-            if user_whitelisted(user):
+            if user_whitelisted(current_app, user):
                 g.current_user = user
             else:
                 g.current_user = F8aUser('unauthenticated@no.auth.token')
-                raise HTTPError(401, 'User needs to be whitelisted')
+                raise HTTPError(401, 'User is not whitelisted')
         else:
             g.current_user = F8aUser('unauthenticated@no.auth.token')
             raise HTTPError(401, 'Authentication required')
@@ -115,12 +113,20 @@ def login_required(view):
     return wrapper
 
 
-def user_whitelisted(user, users_whitelist='users_whitelist'):
-    """Check if user is authorized to access."""
-    with open(users_whitelist, 'r') as f:
-        white_list = f.read().splitlines()
+def user_whitelisted(app, user):
+    """Check if user is authorized to use the gateway."""
+    return user.email in get_whitelist(app)
 
-    return user.email in white_list
+
+def get_whitelist(app):
+    """Return user whitelist."""
+    if not getattr(app, 'user_whitelist', ''):
+        whitelist_str = os.environ.get('USER_WHITELIST', '')
+        domain = os.environ.get('USER_DOMAIN', 'redhat.com')
+        whitelist = tuple("{u}@{d}".format(u=x, d=domain) for x in whitelist_str.split(','))
+        app.user_whitelist = whitelist
+
+    return app.user_whitelist
 
 
 class F8aUser(UserMixin):

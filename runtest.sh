@@ -23,37 +23,7 @@ function prepare_venv() {
 
 here=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
 
-IMAGE_NAME=${IMAGE_NAME:-registry.devshift.net/fabric8-analytics/f8a-api-gateway}
-TEST_IMAGE_NAME=${IMAGE_NAME}
-
-TIMESTAMP="$(date +%F-%H-%M-%S)"
-CONTAINER_NAME="api_gateway-${TIMESTAMP}"
-
-gc() {
-  retval=$?
-  # FIXME: make this configurable
-  echo "Stopping test containers"
-  docker stop ${CONTAINER_NAME} || :
-  echo "Removing test containers"
-  docker rm -v ${CONTAINER_NAME} || :
-  exit $retval
-}
-
-trap gc EXIT SIGINT
-
-if [ "$REBUILD" == "1" ] || \
-     !(docker inspect $IMAGE_NAME > /dev/null 2>&1); then
-  echo "Building $IMAGE_NAME for testing"
-  make fast-docker-build
-fi
-
-if [ "$REBUILD" == "1" ] || \
-     !(docker inspect $TEST_IMAGE_NAME > /dev/null 2>&1); then
-  echo "Building $TEST_IMAGE_NAME test image"
-  make fast-docker-build-tests
-fi
-
-export PYTHONPATH=`pwd`/
+export PYTHONPATH=${here}/
 
 echo "Starting test suite"
 DISABLE_AUTHENTICATION=1 PYTHONDONTWRITEBYTECODE=1 python3 `which pytest` --cov=gateway/ --cov-report term-missing -vv tests
