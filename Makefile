@@ -12,6 +12,9 @@ docker-build:
 fast-docker-build:
 	docker build -t $(REGISTRY)/$(REPOSITORY):$(DEFAULT_TAG) .
 
+fast-docker-build-tests:
+	docker build -t api-gateway-tests -f Dockerfile .
+
 test: fast-docker-build
 	./runtest.sh
 

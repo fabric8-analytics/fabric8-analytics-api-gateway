@@ -1,7 +1,7 @@
 """Unit tests for the authorization module."""
 
 import unittest
-from defaults import *
+from gateway.defaults import *
 
 
 def test_dummy():

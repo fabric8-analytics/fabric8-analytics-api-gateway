@@ -1,7 +1,7 @@
 """Unit tests for the error module."""
 
 import unittest
-from errors import *
+from gateway.errors import *
 
 
 if __name__ == '__main__':
