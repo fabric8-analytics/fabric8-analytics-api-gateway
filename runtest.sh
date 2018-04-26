@@ -55,6 +55,20 @@ fi
 
 export PYTHONPATH=`pwd`/
 
+echo "*****************************************"
+echo "*** Cyclomatic complexity measurement ***"
+echo "*****************************************"
+radon cc -s -a -i venv .
+
+echo "*****************************************"
+echo "*** Maintainability Index measurement ***"
+echo "*****************************************"
+radon mi -s -i venv .
+
+echo "*****************************************"
+echo "*** Unit tests ***"
+echo "*****************************************"
+
 echo "Starting test suite"
 DISABLE_AUTHENTICATION=1 PYTHONDONTWRITEBYTECODE=1 python3 `which pytest` --cov=gateway/ --cov-report term-missing -vv tests
 echo "Test suite passed \\o/"
