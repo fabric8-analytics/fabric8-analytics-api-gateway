@@ -1,11 +1,9 @@
-"""Api gateway for fabr8-analytics services."""
+"""Api gateway for fabric8-analytics services."""
 
-import json
-import logging
 import os
-
+import logging
 import requests
-from flask import Flask, request, session, current_app
+from flask import Flask, request, current_app, Response
 from flask.json import jsonify
 from urllib.parse import urljoin
 
@@ -13,21 +11,24 @@ from gateway.auth import login_required
 from gateway.defaults import configuration
 from gateway.errors import HTTPError
 
+
+def configure_logging(flask_app):
+    """Configure logging for this application."""
+    # Do not interfere if running in debug mode
+    if not flask_app.debug:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter(
+            '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'))
+        log_level = os.environ.get('FLASK_LOGGING_LEVEL', logging.getLevelName(logging.WARNING))
+        handler.setLevel(log_level)
+
+        flask_app.logger.addHandler(handler)
+        flask_app.config['LOGGER_HANDLER_POLICY'] = 'never'
+        flask_app.logger.setLevel(logging.DEBUG)
+
+
 app = Flask(__name__)
-
-if __name__ != '__main__':
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
-
-
-def logout():
-    """Logout."""
-    if 'auth_token' not in session:
-        return {}, 401
-
-    session.pop('auth_token')
-    return {}, 201
+configure_logging(app)
 
 
 @app.route('/')
@@ -40,70 +41,50 @@ def index():
     return jsonify(response), 200
 
 
-@app.route('/<service>/<path:varargs>', methods=['POST', 'GET'])
+@app.route(
+    '/<service>/<path:varargs>',
+    methods=['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH']
+)
+@app.route(
+    '/<service>/',
+    methods=['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'TRACE', 'PATCH'],
+    defaults={'varargs': None}
+)
 @login_required
-def api_gateway(service, varargs=None):
-    """Call f8a service based on request parameters.
-
-    Parameters are separated by / where the firs is servicename
-    second is the service endpoint name following by
-    data that service ingest separated by /
-    """
+def api_gateway(service, varargs):
+    """Forward requests to the `service`."""
     if service not in configuration.bayesian_services:
         return jsonify({'error': 'unknown service'}), 400
 
-    uri = urljoin(configuration.bayesian_services[service], varargs)
-    headers = {'Content-Type': 'application/json'}
+    url = urljoin(configuration.bayesian_services[service], varargs or '/')
+    current_app.logger.debug('Forwarding request to {url}'.format(url=url))
 
-    if request.method == 'POST':
-        try:
-            result = requests.post(uri, json=json.dumps(request.values), headers=headers)
-            status_code = result.status_code
-            current_app.logger.info('Request has reported following body: {r}'.format(r=result))
-        except requests.exceptions.ConnectionError:
-            error = {"Error": "Error occurred during the request adress"
-                              " {u} is not available".format(u=uri)}
-            status_code = 500
-            current_app.logger.error(error)
-
-    elif request.method == 'GET':
-        try:
-            result = requests.get(uri, headers=headers)
-            status_code = result.status_code
-            current_app.logger.info('Request has reported following body: {r}'.format(r=result))
-        except requests.exceptions.ConnectionError:
-            error = {"Error": "Error occurred during the request adress"
-                              " {u} is not available".format(u=uri)}
-            status_code = 500
-            current_app.logger.error(error)
-
-    response = app.response_class(
-        response=json.dumps(error or result.text),
-        status=status_code,
-        mimetype='application/json'
+    response = requests.request(
+        method=request.method,
+        params=request.args.items(),
+        url=url,
+        headers={
+            key: value for (key, value) in request.headers
+            if key != 'Host'
+        },
+        data=request.get_data(),
+        cookies=request.cookies
     )
 
+    response = Response(response.content, response.status_code, response.headers.items())
     return response
 
 
-@app.route('/readiness')
-def readiness():
-    """Handle the /readiness REST API call."""
-    current_app.logger.debug("Readiness probe - connect")
-    return jsonify({}), 200
-
-
-@app.route('/liveness')
-def liveness():
-    """Handle the /liveness REST API call."""
-    current_app.logger.debug("Liveness probe - connect")
-    return jsonify({}), 200
-
-
-@app.route('/<path:invalid_path>')
+@app.errorhandler(404)
 def api_404_handler(*args, **kwargs):
     """Handle all other routes not defined above."""
-    return jsonify(error='Cannot match given query to any API v1 endpoint'), 404
+    return jsonify(error='no such endpoint'), 404
+
+
+@app.errorhandler(HTTPError)
+def error_handler(error):
+    """Handle errors which occurred while processing requests."""
+    return jsonify(error=error.error), error.status_code
 
 
 if __name__ == '__main__':

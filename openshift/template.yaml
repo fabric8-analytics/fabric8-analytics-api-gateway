@@ -23,17 +23,11 @@ objects:
       spec:
         containers:
         - env:
-          - name: F8A_DEBUG
-            value: "true"
           - name: DEPLOYMENT_PREFIX
             valueFrom:
               configMapKeyRef:
                 name: bayesian-config
                 key: deployment-prefix
-          - name: PGBOUNCER_SERVICE_HOST
-            value: bayesian-pgbouncer
-          - name: ANITYA_SERVICE_HOST
-            value: bayesian-anitya
           - name: BAYESIAN_FETCH_PUBLIC_KEY
             valueFrom:
               configMapKeyRef:
@@ -41,6 +35,10 @@ objects:
                 key: keycloak-url
           - name: BAYESIAN_JWT_AUDIENCE
             value: "fabric8-online-platform,openshiftio-public"
+          - name: USER_WHITELIST
+            value: ${USER_WHITELIST}
+          - name: FLASK_LOGGING_LEVEL
+            value: ${FLASK_LOGGING_LEVEL}
           image: "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}"
           name: f8a-api-gateway
           ports:
@@ -48,7 +46,7 @@ objects:
             protocol: TCP
           readinessProbe:
             httpGet:
-              path: /readiness
+              path: /
               port: 5000
               scheme: HTTP
             initialDelaySeconds: 5
@@ -56,7 +54,7 @@ objects:
             timeoutSeconds: 10
           livenessProbe:
             httpGet:
-              path: /liveness
+              path: /
               port: 5000
               scheme: HTTP
             initialDelaySeconds: 5
@@ -114,10 +112,22 @@ parameters:
   displayName: Image tag
   required: true
   name: IMAGE_TAG
-  value: "latest"  # image-tag
+  value: "latest"
 
 - description: Number of deployment replicas
   displayName: Number of deployment replicas
   required: true
   name: REPLICAS
   value: "1"
+
+- description: "Flask logging level (see: https://docs.python.org/3/library/logging.html#levels)"
+  displayName: Flask logging level
+  required: false
+  name: FLASK_LOGGING_LEVEL
+  value: "INFO"
+
+- description: A comma-separated list of whitelisted users that are allowed to use the service
+  displayName: User whitelist
+  required: true
+  name: USER_WHITELIST
+  value: "msrb,thrcka,macermak,pkajaba"
