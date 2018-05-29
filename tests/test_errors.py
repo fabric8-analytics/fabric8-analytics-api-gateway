@@ -2,7 +2,7 @@
 
 import unittest
 import pytest
-from gateway import HTTPError
+from gateway.errors import HTTPError
 
 
 def test_http_error_attributes():
