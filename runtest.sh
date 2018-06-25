@@ -8,6 +8,9 @@ set -e
 # unable to prepare context: The Dockerfile (Dockerfile.tests) must be within the build context (.)
 set -x
 
+# test coverage threshold
+COVERAGE_THRESHOLD=50
+
 export TERM=xterm
 TERM=${TERM:-xterm}
 
@@ -57,5 +60,5 @@ echo "*** Unit tests ***"
 echo "*****************************************"
 
 echo "Starting test suite"
-DISABLE_AUTHENTICATION=1 PYTHONDONTWRITEBYTECODE=1 python3 "$(which pytest)" --cov=gateway/ --cov-report term-missing -vv tests
+DISABLE_AUTHENTICATION=1 PYTHONDONTWRITEBYTECODE=1 python3 "$(which pytest)" --cov=gateway/ --cov-report term-missing --cov-fail-under=$COVERAGE_THRESHOLD -vv tests
 printf "%stests passed%s\n\n" "${GREEN}" "${NORMAL}"
