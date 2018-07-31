@@ -76,7 +76,7 @@ def api_gateway(service, varargs):
 
 
 @app.errorhandler(404)
-def api_404_handler(*args, **kwargs):
+def api_404_handler(*args, **_kwargs):
     """Handle all other routes not defined above."""
     return jsonify(error='no such endpoint'), 404
 
