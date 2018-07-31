@@ -1,6 +1,5 @@
 """Unit tests for the errors module."""
 
-import unittest
 import pytest
 from gateway.errors import HTTPError
 
@@ -15,6 +14,7 @@ def test_http_error_attributes():
 def test_http_error_raise():
     """Test the basic behaviour of HTTPError class."""
     with pytest.raises(HTTPError) as e:
+        print(e)
         raise HTTPError(404, "Not found")
 
 
