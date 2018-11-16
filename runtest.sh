@@ -63,4 +63,4 @@ echo "Starting test suite"
 DISABLE_AUTHENTICATION=1 PYTHONDONTWRITEBYTECODE=1 python3 "$(which pytest)" --cov=gateway/ --cov-report term-missing --cov-fail-under=$COVERAGE_THRESHOLD -vv tests
 printf "%stests passed%s\n\n" "${GREEN}" "${NORMAL}"
 
-`which codecov` --token=31551081-2274-47b5-91fd-7078feb91fc7
+`which codecov` --token=b2147eb8-2c22-486c-a417-220b36ceceb5
