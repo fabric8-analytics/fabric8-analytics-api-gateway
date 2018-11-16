@@ -54,6 +54,7 @@ def decode_token():
     decoded_token = None
     for aud in audiences:
         try:
+            # check if the token can be decoded using the provided publick key
             decoded_token = jwt.decode(token.encode('ascii'), pub_key, algorithm='RS256',
                                        audience=aud)
         except jwt.InvalidTokenError:
