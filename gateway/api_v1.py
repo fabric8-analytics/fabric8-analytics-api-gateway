@@ -27,7 +27,10 @@ def configure_logging(flask_app):
         flask_app.logger.setLevel(logging.DEBUG)
 
 
+# initialize the Flask application
 app = Flask(__name__)
+
+# configure logging for the Flask application
 configure_logging(app)
 
 
