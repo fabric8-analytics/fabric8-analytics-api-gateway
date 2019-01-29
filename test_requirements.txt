@@ -1,4 +1,4 @@
 pytest
 codecov==2.0.15
 pytest-cov
-radon
+radon==2.4.0
