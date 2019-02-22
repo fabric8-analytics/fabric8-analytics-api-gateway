@@ -45,6 +45,9 @@ here=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
 
 export PYTHONPATH=${here}/
 
+# this script is copied by CI, we don't need it
+rm -f env-toolkit
+
 echo "*****************************************"
 echo "*** Cyclomatic complexity measurement ***"
 echo "*****************************************"
