@@ -3,7 +3,7 @@ FROM registry.centos.org/centos/centos:7
 ENV LANG=en_US.UTF-8
 
 RUN yum install -y epel-release &&\
-    yum install -y gcc python34-pip python34-devel &&\
+    yum install -y gcc python36-pip python36-devel &&\
     yum clean all
 
 RUN mkdir -p /api_gateway/gateway
