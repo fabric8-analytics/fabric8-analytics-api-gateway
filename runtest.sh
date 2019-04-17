@@ -22,6 +22,10 @@ YELLOW=$(tput bold && tput setaf 3)
 
 printf "%sCreate Virtualenv for Python deps ..." "${NORMAL}"
 
+check_python_version() {
+    python3 tools/check_python_version.py 3 6
+}
+
 function prepare_venv() {
     VIRTUALENV=$(which virtualenv)
     if [ $? -eq 1 ]
@@ -38,6 +42,8 @@ function prepare_venv() {
     fi
     printf "%sPython virtual environment initialized%s\n" "${YELLOW}" "${NORMAL}"
 }
+
+check_python_version
 
 [ "$NOVENV" == "1" ] || prepare_venv || exit 1
 
