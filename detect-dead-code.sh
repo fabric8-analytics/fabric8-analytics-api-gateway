@@ -1,6 +1,6 @@
 #!/bin/bash
 
-directories="gateway tests"
+directories="gateway tests tools"
 pass=0
 fail=0
 

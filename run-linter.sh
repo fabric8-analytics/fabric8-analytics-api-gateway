@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-directories="gateway tests"
+directories="gateway tests tools"
 separate_files=""
 pass=0
 fail=0
