@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-directories="gateway tests tools"
-separate_files=""
+IFS=$'\n'
+
+# list of directories with sources to check
+directories=$(cat directories.txt)
+
 pass=0
 fail=0
 
@@ -41,28 +44,6 @@ do
             let "fail++"
         fi
     done
-done
-
-
-echo
-echo "----------------------------------------------------"
-echo "Running Python linter against selected files:"
-echo $separate_files
-echo "----------------------------------------------------"
-
-# check for individual files
-for source in $separate_files
-do
-    echo $source
-    pycodestyle $source
-    if [ $? -eq 0 ]
-    then
-        echo "    Pass"
-        let "pass++"
-    else
-        echo "    Fail"
-        let "fail++"
-    fi
 done
 
 
