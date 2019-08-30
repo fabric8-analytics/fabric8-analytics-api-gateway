@@ -7,7 +7,7 @@ SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 IFS=$'\n'
 
 # list of directories with sources to check
-directories=$(cat directories.txt)
+directories=$(cat ${SCRIPT_DIR}/directories.txt)
 
 pass=0
 fail=0
