@@ -1,5 +1,9 @@
 #!/bin/bash
 
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+pushd "${SCRIPT_DIR}/.." > /dev/null
+
 # fail if smth fails
 # the whole env will be running if test suite fails so you can debug
 set -e
@@ -73,3 +77,5 @@ DISABLE_AUTHENTICATION=1 PYTHONDONTWRITEBYTECODE=1 python3 "$(which pytest)" --c
 printf "%stests passed%s\n\n" "${GREEN}" "${NORMAL}"
 
 `which codecov` --token=b2147eb8-2c22-486c-a417-220b36ceceb5
+
+popd > /dev/null
