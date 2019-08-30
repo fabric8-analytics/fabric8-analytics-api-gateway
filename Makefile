@@ -16,7 +16,7 @@ fast-docker-build-tests:
 	docker build -t api-gateway-tests -f Dockerfile .
 
 test: fast-docker-build
-	./runtest.sh
+	./qa/runtest.sh
 
 get-image-name:
 	@echo $(REGISTRY)/$(REPOSITORY):$(DEFAULT_TAG)
