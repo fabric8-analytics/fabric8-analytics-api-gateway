@@ -51,7 +51,7 @@ check_python_version
 
 [ "$NOVENV" == "1" ] || prepare_venv || exit 1
 
-here=$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)
+here=$(pwd)
 
 export PYTHONPATH=${here}/
 
