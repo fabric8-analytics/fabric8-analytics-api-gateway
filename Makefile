@@ -1,5 +1,5 @@
-REGISTRY?=registry.devshift.net
-REPOSITORY?=fabric8-analytics/f8a-api-gateway
+REGISTRY?=quay.io
+REPOSITORY?=openshiftio/fabric8-analytics-api-gateway
 DEFAULT_TAG=latest
 
 .PHONY: all docker-build fast-docker-build test get-image-name get-image-repository
@@ -23,3 +23,6 @@ get-image-name:
 
 get-image-repository:
 	@echo $(REPOSITORY)
+
+get-push-registry:
+	@echo $(REGISTRY)
