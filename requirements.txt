@@ -4,31 +4,32 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-asn1crypto==0.24.0        # via cryptography
 babel==2.5.3              # via flask-babelex
 blinker==1.4              # via flask-mail, flask-principal
 certifi==2018.4.16        # via requests
 cffi==1.11.5              # via cryptography
 chardet==3.0.4            # via requests
 click==6.7                # via flask
-cryptography==2.2.2
+cryptography==3.2         # via -r requirements.in
+enum34==1.1.10            # via cryptography
 flask-babelex==0.9.3      # via flask-security
 flask-login==0.4.1        # via flask-security
 flask-mail==0.9.1         # via flask-security
 flask-principal==0.4.0    # via flask-security
-flask-security==3.0.0
+flask-security==3.0.0     # via -r requirements.in
 flask-wtf==0.14.2         # via flask-security
-flask==0.12.2
-gunicorn==19.7.1
-idna==2.6                 # via cryptography, requests
+flask==0.12.2             # via -r requirements.in, flask-babelex, flask-login, flask-mail, flask-principal, flask-security, flask-wtf
+gunicorn==19.7.1          # via -r requirements.in
+idna==2.6                 # via requests
+ipaddress==1.0.23         # via cryptography
 itsdangerous==0.24        # via flask, flask-security
 jinja2==2.10              # via flask, flask-babelex
 markupsafe==1.0           # via jinja2
 passlib==1.7.1            # via flask-security
 pycparser==2.18           # via cffi
-pyjwt==1.6.1
+pyjwt==1.6.1              # via -r requirements.in
 pytz==2018.4              # via babel
-requests==2.18.4
+requests==2.18.4          # via -r requirements.in
 six==1.11.0               # via cryptography
 speaklater==1.3           # via flask-babelex
 urllib3==1.22             # via requests
